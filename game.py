@@ -1,6 +1,40 @@
 import pygame
 import sys
 import random
+import numpy as np
+
+####################
+#### neural net ####
+####################
+
+class NeuralNet:
+    def __init__(self, input_size, hidden_size1, hidden_size2, output_size):
+        # Initialize the weights and biases for the first hidden layer
+        self.weights1 = np.random.randn(input_size, hidden_size1)
+        self.biases1 = np.random.randn(hidden_size1)* 0.1 # ???
+        
+        # Initialize the weights and biases for the second hidden layer
+        self.weights2 = np.random.randn(hidden_size1, hidden_size2)
+        self.biases2 = np.random.randn(hidden_size2)* 0.1
+        
+        # Initialize the weights and biases for the output layer
+        self.weights3 = np.random.randn(hidden_size2, output_size)
+        self.biases3 = np.random.randn(output_size)* 0.1
+    
+    def forward(self, x):
+        # Forward pass through the network
+        hidden_layer1 = np.maximum(0, np.dot(x, self.weights1) + self.biases1)
+        hidden_layer2 = np.maximum(0, np.dot(hidden_layer1, self.weights2) + self.biases2)
+        output_layer = np.dot(hidden_layer2, self.weights3) + self.biases3
+        return output_layer
+    
+####################
+#### snake mind ####
+####################
+    
+# input size = 32, hidden size1 = 24, hidden size2 = 12, output size = 4
+net = NeuralNet(32, 24, 12, 4) 
+output = [0,0,0,0]
 
 snake_isAlive = True
 speed = 5.0
@@ -310,6 +344,17 @@ while True:
         # set the game speed
         clock.tick(speed) 
         
+        # determine the brain output
+        max_index = np.argmax(output)
+        if max_index == 0:
+            snake_head_direction = 'up'
+        elif max_index == 1:
+            snake_head_direction = 'right'
+        elif max_index == 2:
+            snake_head_direction = 'down'
+        elif max_index == 3:
+            snake_head_direction = 'left'
+        
         # in every loop check all event - like button presses
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -346,15 +391,19 @@ while True:
         else:
             snake_move()
             
+        # evaluate last move
+        # todo    
+            
+        # snake sense
         snake_sens_data = snake_sense()  
+        #snake think
+        output = net.forward(snake_sens_data) 
+        
             
         set_draw()
 
         # redraw all element
         pygame.display.update()
-
-
-       
 
 
 # sample for designing neural visualization
@@ -377,24 +426,3 @@ while True:
 # line_color = (155, 155, 155)    # red color
 # line_width = 2
 # pygame.draw.line(screen, line_color, (125, 200), (275, 200), line_width)
-
-# # font font font
-# # set the font properties
-# font_size = 24
-# font_color = (255, 255, 255)   # white color
-# font_name = pygame.font.get_default_font()
-# font = pygame.font.SysFont(font_name, font_size, bold=False)
-
-# # set the text properties
-# text = "Hello, world!"
-# text_surface = font.render(text, True, font_color)
-
-# # get the text surface dimensions
-# text_width, text_height = text_surface.get_size()
-
-# # center the text on the screen
-# text_x = 50
-# text_y = 50
-
-# # draw the text on the screen
-# screen.blit(text_surface, (text_x, text_y))
