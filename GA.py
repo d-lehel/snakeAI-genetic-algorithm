@@ -15,7 +15,7 @@ fitness_values = [0] * 1000
 selection_rate = 0.5
 mutation_rate = 0.2
 generation = 0
-max_generation = 10
+max_generation = 5
 
 ###################
 ### GA fuctions ###
@@ -35,8 +35,7 @@ def fitness(population):
     print('<<< fitness values calculated>>>')
     
     for i in range(len(population)):
-        game = g.Game()
-        fitness_values[i] = game.gameplay(population[i])
+        fitness_values[i] = g.gameplay(population[i], False)
         
 def sort():
     """ sort the population by their fitness values """
@@ -169,10 +168,13 @@ def training():
         generation += 1 
  
 training()
+sort()
 
 #save the net to a file
 with open('brains.pickle', 'wb') as f:
     pickle.dump(population, f)
+with open('brain.pickle', 'wb') as f:
+    pickle.dump(population[len(population)-1], f)
        
         
 # todo error -> kulombseg van a training es visual gameplay kozott -> le kell ellenorizni
