@@ -9,18 +9,16 @@ level_color = pygame.Color((240, 240, 240))
 food_color = pygame.Color('red')
 snake_body_rect = pygame.Rect(50, 50, 50, 50)
 
-def draw(level, snake_sens_data, snake_sens_data_labels, fitness_score, reaction):
+def draw(level, head_position, snake_sens_data, snake_sens_data_labels, fitness_score, reaction):
     
     # draw window background
     screen.fill( pygame.Color('white'))
     # draw level background
     pygame.draw.rect(screen, level_color, pygame.Rect(600, 100, 500, 500))
 
-    # to show only once
-    lines = True
     for i in range(len(level)):
         for j in range(len(level[i])):
-            if level[i][j] == 1 and lines:
+            if i == head_position[0] and j == head_position[1]:
                 lines = False
                 color = (150,150,150)
                 # Set the starting point of the line
